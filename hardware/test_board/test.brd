@@ -2214,6 +2214,7 @@ design rules under a new name.</description>
 <contactref element="JP2" pad="1"/>
 <contactref element="IC2" pad="12"/>
 <contactref element="C11" pad="2"/>
+<contactref element="IC2" pad="18"/>
 </signal>
 <signal name="D0">
 <contactref element="IC1" pad="12"/>

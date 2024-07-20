@@ -18881,6 +18881,7 @@ General purpose 1N400x type rectifier
 <pinref part="GND6" gate="1" pin="GND"/>
 <wire x1="134.62" y1="63.5" x2="132.08" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="132.08" y1="63.5" x2="132.08" y2="55.88" width="0.1524" layer="91"/>
+<pinref part="IC2" gate="A" pin="!CE"/>
 </segment>
 <segment>
 <pinref part="S1" gate="1" pin="P"/>
@@ -18981,6 +18982,7 @@ General purpose 1N400x type rectifier
 <pinref part="R4" gate="G$1" pin="2"/>
 <wire x1="-20.32" y1="106.68" x2="-20.32" y2="109.22" width="0.1524" layer="91"/>
 <junction x="-20.32" y="109.22"/>
+<label x="-5.08" y="111.76" size="1.4224" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
 <pinref part="IC1" gate="G$1" pin="VDD"/>
@@ -19003,10 +19005,12 @@ General purpose 1N400x type rectifier
 <pinref part="C8" gate="G$1" pin="+"/>
 <wire x1="96.52" y1="190.5" x2="96.52" y2="193.04" width="0.1524" layer="91"/>
 <junction x="96.52" y="193.04"/>
+<label x="104.14" y="193.04" size="1.4224" layer="95" xref="yes"/>
 </segment>
 <segment>
 <pinref part="JP2" gate="A" pin="15"/>
 <wire x1="76.2" y1="58.42" x2="63.5" y2="58.42" width="0.1524" layer="91"/>
+<label x="63.5" y="58.42" size="1.4224" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -19080,6 +19084,7 @@ General purpose 1N400x type rectifier
 <wire x1="12.7" y1="132.08" x2="12.7" y2="129.54" width="0.1524" layer="91"/>
 <wire x1="12.7" y1="132.08" x2="20.32" y2="132.08" width="0.1524" layer="91"/>
 <junction x="12.7" y="132.08"/>
+<label x="20.32" y="132.08" size="1.4224" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$9" class="0">
@@ -19219,6 +19224,7 @@ General purpose 1N400x type rectifier
 <segment>
 <pinref part="JP2" gate="A" pin="14"/>
 <wire x1="76.2" y1="60.96" x2="63.5" y2="60.96" width="0.1524" layer="91"/>
+<label x="63.5" y="60.96" size="1.4224" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
 <pinref part="IC1" gate="G$1" pin="INT"/>
