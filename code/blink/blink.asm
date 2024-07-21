@@ -1,5 +1,5 @@
 ; First test program for 8048/8049
-; Just goes into an infinite loop executing nop instructions
+; Uses delay loop to blink LED
 
 .org 0x0
 
