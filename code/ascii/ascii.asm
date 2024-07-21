@@ -53,31 +53,41 @@ main_loop:
 	; Compare with previous state of imput switches
 	mov R3, A					; Save initial value of accumulator - it will be changed during comparison
 	xrl A, R5					; Compare with previous state
-	jz main_check_input			; It is identical as before - just continue
+	jz main_check_input_0			; It is identical as before - just continue
 	mov A, R3					; Retrieve original value
 	mov R5, A					; Save original value in R5
 	mov R2, #0x00				; Zero out text pointer
 	jmp main_end				; After input changed we do nothing initially
-main_check_input:
+main_check_input_0:
 	; Check new status
 	mov A, R3					; Retrieve initial value of A
 	xrl A, #0x00				; Exclusive or - it will produce 0x00 if the same
-	jz main_loop
+	jnz main_check_input_1
+	call get_text_1
+	jmp main_outchar
+main_check_input_1:
 	mov A, R3					; Retrieve initial value
 	xrl A, #0x01
-	jz main_loop
+	jnz main_check_input_2
+	call get_text_1
+	jmp main_outchar
+main_check_input_2:
 	mov A, R3
 	xrl A, #0x02
-	jz main_loop
+	jnz main_check_input_3
+	call get_text_1
+	jmp main_outchar
+main_check_input_3:
 	mov A, R3
 	xrl A, #0x03
 	;jz main_blink
+	call get_text_4
 	; Save status
-main_blink:
-	mov R1, #port_value
-	mov A, @R1
-	xrl A, #0xFF
+main_outchar:
+	; We already have character in A
+	xrl A, #0xFF				; Negate it bitwise
 	outl P1, A
+	mov R1, #port_value
 	mov @R1, A
 main_end:
 	mov R1, #timer_flag
