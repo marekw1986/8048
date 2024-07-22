@@ -67,9 +67,9 @@ main_check_clk:
 	mov A, @R1
 	mov R6, A					; Save it in R6
 	anl A, #0x80				; Check value of most significant bit
-	jz main_check_input_0		; It is zero, so proceed with updating value
-	mov A, R6					; Otherwise just clear clock bit
-	anl A, #0x7F
+	jnz main_check_input_0		; It is NOT zero, so proceed with updating value
+	mov A, R6					; Otherwise just SET clock bit
+	orl A, #0x80
 	mov @R1, A					; Save modified value
 	outl P1, A					; Update LEDs
 	jmp main_end				; We do nothing in this cycle after that
@@ -101,7 +101,7 @@ main_check_input_3:
 main_outchar:
 	; We already have character in A
 	xrl A, #0xFF				; Negate it bitwise
-	orl A, #0x80				; Set most significant bit
+	anl A, #0x7F				; CLEAR most significant bit
 	outl P1, A
 	mov R1, #port_value
 	mov @R1, A
