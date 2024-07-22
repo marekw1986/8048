@@ -7,7 +7,7 @@
 ; R3 - general purpose
 ; R4 - timer cycle count
 ; R5 - previous state of switches
-; R6 - unused
+; R6 - general purpose
 ; R7 - unused
 
 .equ cycle_count, 60
@@ -53,7 +53,7 @@ main_loop:
 	; Compare with previous state of imput switches
 	mov R3, A					; Save initial value of accumulator - it will be changed during comparison
 	xrl A, R5					; Compare with previous state
-	jz main_check_input_0			; It is identical as before - just continue
+	jz main_check_clk			; It is identical as before - just continue
 	mov A, R3					; Retrieve original value
 	mov R5, A					; Save original value in R5
 	mov R2, #0x00				; Zero out text pointer
@@ -62,6 +62,17 @@ main_loop:
 	mov R1, #port_value
 	mov @R1, #0xFF
 	jmp main_end				; After input changed we do nothing initially
+main_check_clk:
+	mov R1, #port_value			; Read current port value
+	mov A, @R1
+	mov R6, A					; Save it in R6
+	anl A, #0x80				; Check value of most significant bit
+	jz main_check_input_0		; It is zero, so proceed with updating value
+	mov A, R6					; Otherwise just clear clock bit
+	anl A, #0x7F
+	mov @R1, A					; Save modified value
+	outl P1, A					; Update LEDs
+	jmp main_end				; We do nothing in this cycle after that
 main_check_input_0:
 	; Check new status
 	mov A, R3					; Retrieve initial value of A
@@ -90,6 +101,7 @@ main_check_input_3:
 main_outchar:
 	; We already have character in A
 	xrl A, #0xFF				; Negate it bitwise
+	orl A, #0x80				; Set most significant bit
 	outl P1, A
 	mov R1, #port_value
 	mov @R1, A
