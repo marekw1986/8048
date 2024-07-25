@@ -2,7 +2,8 @@
 ; Uses timer to blink LED
 
 ; Register usage
-; R0, R1 - addressing, general purpose
+; R0 - addressing, general purpose
+; R1 - unused
 ; R2 - text pointer
 ; R3 - general purpose
 ; R4 - timer cycle count
@@ -12,10 +13,10 @@
 
 .equ cycle_count, 60
 
-; Timer flag is stored at data memory location 32
-.equ timer_flag, 32
+; Flag 1 is used as timer flag
+
 ; Timer flag is stored at data memory location 33
-.equ port_value, 33
+.equ port_value, 32
 
 .org 0x0
 
@@ -31,10 +32,8 @@ reset:
 ; Initialize
 entry:
 	mov R2, #0x00				; We use R2 as text pointer
-	mov R1, #timer_flag
-	mov @R1, #0x00
-	mov R1, #port_value
-	mov @R1, #0xFF
+	mov R0, #port_value
+	mov @R0, #0xFF
 	mov R4, #cycle_count
 	strt t
 	en tcnti
@@ -43,10 +42,7 @@ entry:
 	outl P2, A					; Set P2.4..7 as inputs
 ; Main loop
 main_loop:
-	mov R1, #timer_flag
-	mov A, @R1
-	xrl A, #0xFF
-	jnz main_loop
+	jf1 main_loop
 	in A, P2					; Read PORT2
 	swap A						; Swap nibbles
 	anl A, #0x03				; Mask out everything except bits 0 and 1
@@ -59,18 +55,18 @@ main_loop:
 	mov R2, #0x00				; Zero out text pointer
 	mov A, #0xFF				; Turn off LEDS
 	outl P1, A
-	mov R1, #port_value
-	mov @R1, #0xFF
+	mov R0, #port_value
+	mov @R0, #0xFF
 	jmp main_end				; After input changed we do nothing initially
 main_check_clk:
-	mov R1, #port_value			; Read current port value
-	mov A, @R1
+	mov R0, #port_value			; Read current port value
+	mov A, @R0
 	mov R6, A					; Save it in R6
 	anl A, #0x80				; Check value of most significant bit
 	jnz main_check_input_0		; It is NOT zero, so proceed with updating value
 	mov A, R6					; Otherwise just SET clock bit
 	orl A, #0x80
-	mov @R1, A					; Save modified value
+	mov @R0, A					; Save modified value
 	outl P1, A					; Update LEDs
 	jmp main_end				; We do nothing in this cycle after that
 main_check_input_0:
@@ -103,18 +99,16 @@ main_outchar:
 	xrl A, #0xFF				; Negate it bitwise
 	anl A, #0x7F				; CLEAR most significant bit
 	outl P1, A
-	mov R1, #port_value
-	mov @R1, A
+	mov R0, #port_value
+	mov @R0, A
 main_end:
-	mov R1, #timer_flag
-	mov @R1, #0x00
+	cpl F1
 	jmp main_loop
 	
 timer_event:
 	djnz R4, timer_event_done
 	mov R4, #cycle_count
-	mov R0, #timer_flag
-	mov @R0, #0xFF
+	clr F1
 timer_event_done:
 	retr
 	
