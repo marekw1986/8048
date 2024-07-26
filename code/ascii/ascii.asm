@@ -2,7 +2,7 @@
 ; Uses timer to blink LED
 
 ; Register usage
-; R0 - addressing, general purpose
+; R0 - unused
 ; R1 - unused
 ; R2 - text pointer
 ; R3 - general purpose
@@ -14,9 +14,6 @@
 .equ cycle_count, 60
 
 ; Flag 1 is used as timer flag
-
-; Timer flag is stored at data memory location 33
-.equ port_value, 32
 
 .org 0x0
 
@@ -32,14 +29,13 @@ reset:
 ; Initialize
 entry:
 	mov R2, #0x00				; We use R2 as text pointer
-	mov R0, #port_value
-	mov @R0, #0xFF
 	mov R4, #cycle_count
-	strt t
-	en tcnti
-
+	mov A, #0xFF
+	outl P1, A
 	mov A, #0xF0				; Set P2.4..7 as inputs
 	outl P2, A					; Set P2.4..7 as inputs
+	strt t
+	en tcnti
 ; Main loop
 main_loop:
 	jf1 main_loop
@@ -55,12 +51,9 @@ main_loop:
 	mov R2, #0x00				; Zero out text pointer
 	mov A, #0xFF				; Turn off LEDS
 	outl P1, A
-	mov R0, #port_value
-	mov @R0, #0xFF
 	jmp main_end				; After input changed we do nothing initially
 main_check_clk:
-	mov R0, #port_value			; Read current port value
-	mov A, @R0
+	in A, P1					; Read current LED port value
 	mov R6, A					; Save it in R6
 	anl A, #0x80				; Check value of most significant bit
 	jnz main_check_input_0		; It is NOT zero, so proceed with updating value
@@ -99,8 +92,6 @@ main_outchar:
 	xrl A, #0xFF				; Negate it bitwise
 	anl A, #0x7F				; CLEAR most significant bit
 	outl P1, A
-	mov R0, #port_value
-	mov @R0, A
 main_end:
 	cpl F1
 	jmp main_loop
