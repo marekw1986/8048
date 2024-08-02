@@ -51,6 +51,7 @@ main_loop:
 	mov R2, #0x00				; Zero out text pointer
 	mov A, #0xFF				; Turn off LEDS
 	outl P1, A
+	mov R4, #cycle_count		; Reset cycle count
 	jmp main_end				; After input changed we do nothing initially
 main_check_clk:
 	in A, P1					; Read current LED port value
